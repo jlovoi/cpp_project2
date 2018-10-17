@@ -6,10 +6,11 @@
 //  Copyright © 2018 Joseph Lovoi. All rights reserved.
 //
 
+#include "HashTable.cpp"
 #include <iostream>
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
+    HashTable<char*>* ht = new HashTable<char*>(20);
+    
+    std::list<char*>* name = ht->createLinkedList("Joseph");
 }
