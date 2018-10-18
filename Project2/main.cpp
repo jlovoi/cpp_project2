@@ -9,8 +9,19 @@
 #include "HashTable.cpp"
 #include <iostream>
 
-int main(int argc, const char * argv[]) {
-    HashTable<char*>* ht = new HashTable<char*>(20);
-    
-    std::list<char*>* name = ht->createLinkedList("Joseph");
+int main() {
+    HashTable<char*>* myHashTable;
+    char* Names[25] = {"Andy B", "Amy Dean", "Antonio G", "Andy Roberts",
+        "Brian W","Bob Macy", "Brent James", "Buck Muck",
+        "Cannon James", "Cart Wright", "Catherine Zeta", "Carl Lewis", "David Johnson", "Dowd Peter",
+        "Daniel Fauchier", "Dawn Smith" "Yarda Varda", "Yami Jacob", "Yester Louis", "Yukon Oklahoma",
+        "Zandi Rich", "Zea John", "Zelby Leon", "Ziert Paul", "Zanola Helen"};
+    int i;
+    myHashTable = new HashTable<char*>(26);
+    for (i=0; i < 24; i++) {
+        (*myHashTable).insert(Names[i]);
+    }
+    cout << "Printing the hash table after inserting...." << endl;
+    cout << myHashTable << endl;
+    return 0;
 }

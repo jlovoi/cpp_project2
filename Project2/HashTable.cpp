@@ -16,16 +16,16 @@ using namespace std;
 template<class T>
 class HashTable {
 protected:
-    vector<T> vect;
+    vector<list<T>*>* vect = new vector<list<T>*>(0);
 public:
     HashTable(int n);
     int hashInt(T input);
     list<T>* createLinkedList(T input);
+    void insert(T input);
 };
 
 template<class T>
 HashTable<T>::HashTable(int n) {
-    vect.reserve(n);
 }
 
 template<class T>
@@ -45,4 +45,35 @@ list<T>* HashTable<T>::createLinkedList(T input) {
         ++i;
     }
     return nameList;
+}
+
+template<class T>
+void HashTable<T>::insert(T input) {
+    int hashInt = HashTable::hashInt(input);
+    list<T>* linkedList = HashTable::createLinkedList(input);
+    
+    cout << "NEW HASH: " << hashInt <<endl;
+    int i = hashInt;
+    while (true) {
+        // If hashInt is greater than the capacity of the vector, resize the vector to hashInt and insert the linkedlist at hashInt
+        if (i >= vect->size()) {
+            vect->resize(i, NULL);
+            (*vect).push_back(linkedList);
+            cout << "Added " << input << " to vect from if at " << i << endl;
+            break;
+        }
+        // If the space at it is taken, increment it and go through loop again
+        else if ((*vect)[i] != NULL) {
+            i++;
+            cout << "inc i to " << i << endl;
+            continue;
+        }
+        // If it is null, then insert at that position
+        if ((*vect)[i] == NULL) {
+            (*vect)[i] = linkedList;
+            cout << "Added " << input << " list to vect from else at " << i << endl;
+            i++;
+            break;
+        }
+    }
 }
