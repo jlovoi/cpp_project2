@@ -23,5 +23,11 @@ int main() {
     }
     cout << "Printing the hash table after inserting...." << endl;
     cout << myHashTable << endl;
+    if ((*myHashTable).find("Zandi Rich")) {
+        cout << "Zandi Rich is in the list" << endl;
+    }
+    else {
+        cout << "Zandi Rich is not in the list" << endl;
+    }
     return 0;
 }

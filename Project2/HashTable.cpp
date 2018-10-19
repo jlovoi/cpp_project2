@@ -22,6 +22,7 @@ public:
     int hashInt(T input);
     list<T>* createLinkedList(T input);
     void insert(T input);
+    bool find(T str);
 };
 
 template<class T>
@@ -42,8 +43,11 @@ list<T>* HashTable<T>::createLinkedList(T input) {
     int i = 0;
     while (input[i] != '\0') {
         nameList->push_back(&input[i]);
+        break;
         ++i;
     }
+    cout << "TEST: " << nameList->front() << endl;
+    
     return nameList;
 }
 
@@ -76,4 +80,31 @@ void HashTable<T>::insert(T input) {
             break;
         }
     }
+}
+
+template<class T>
+bool HashTable<T>::find(T str) {
+    int hashInt = HashTable::hashInt(str);
+    list<T>* toFind = HashTable::createLinkedList(str);
+    
+//    auto it = toFind->begin();
+//    for (auto it = toFind->begin(); it != toFind->end();) {
+//        cout << *it << " " << sizeof(it) << endl;
+//        advance(it, 1);
+//    }
+    
+    cout << toFind->front() << endl;
+    
+    int i = hashInt;
+    while (i < vect->size()) {
+        cout << "Checking at " << i << endl;
+        if (toFind == vect->at(i)) {
+            return true;
+        }
+        else {
+            i++;
+            continue;
+        }
+    }
+    return false;
 }
