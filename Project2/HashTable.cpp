@@ -16,11 +16,11 @@ using namespace std;
 template<class T>
 class HashTable {
 protected:
-    vector<list<T>*>* vect = new vector<list<T>*>(0);
+    vector<list<char>*>* vect = new vector<list<char>*>(0);
 public:
     HashTable(int n);
     int hashInt(T input);
-    list<T>* createLinkedList(T input);
+    list<char>* createLinkedList(char* input);
     void insert(T input);
     bool find(T str);
 };
@@ -36,17 +36,13 @@ int HashTable<T>::hashInt(T input) {
 }
 
 template<class T>
-list<T>* HashTable<T>::createLinkedList(T input) {
-    list<T>* nameList = new list<T>();
+list<char>* HashTable<T>::createLinkedList(char* name) {
+    list<char>* nameList = new list<char>();
     
     // insert each element of the char array into the linked list
-    int i = 0;
-    while (input[i] != '\0') {
-        nameList->push_back(&input[i]);
-        break;
-        ++i;
+    for (int i = 0; i < char_traits<char>::length(name); i++) {
+        nameList->push_back(name[i]);
     }
-    cout << "TEST: " << nameList->front() << endl;
     
     return nameList;
 }
@@ -54,7 +50,7 @@ list<T>* HashTable<T>::createLinkedList(T input) {
 template<class T>
 void HashTable<T>::insert(T input) {
     int hashInt = HashTable::hashInt(input);
-    list<T>* linkedList = HashTable::createLinkedList(input);
+    list<char>* linkedList = HashTable::createLinkedList(input);
     
     cout << "NEW HASH: " << hashInt <<endl;
     int i = hashInt;
@@ -85,7 +81,7 @@ void HashTable<T>::insert(T input) {
 template<class T>
 bool HashTable<T>::find(T str) {
     int hashInt = HashTable::hashInt(str);
-    list<T>* toFind = HashTable::createLinkedList(str);
+    list<char>* toFind = HashTable::createLinkedList(str);
     
 //    auto it = toFind->begin();
 //    for (auto it = toFind->begin(); it != toFind->end();) {
@@ -93,18 +89,23 @@ bool HashTable<T>::find(T str) {
 //        advance(it, 1);
 //    }
     
-    cout << toFind->front() << endl;
-    
     int i = hashInt;
     while (i < vect->size()) {
         cout << "Checking at " << i << endl;
-        if (toFind == vect->at(i)) {
+        if (toFind == (*vect)[i]) {
             return true;
         }
         else {
             i++;
             continue;
         }
+    }
+    
+    for (int i = 0; i < char_traits<char>::length(str); i++) {
+        cout << "TEST: " << toFind->front() << endl;
+        cout << "TEST: " << (*vect)[32]->front() << endl;
+        toFind->pop_front();
+        (*vect)[32]->pop_front();
     }
     return false;
 }
