@@ -82,6 +82,7 @@ template<class T>
 bool HashTable<T>::find(T str) {
     int hashInt = HashTable::hashInt(str);
     list<char>* toFind = HashTable::createLinkedList(str);
+    list<char>* tempList;
     
 //    auto it = toFind->begin();
 //    for (auto it = toFind->begin(); it != toFind->end();) {
@@ -101,9 +102,11 @@ bool HashTable<T>::find(T str) {
         }
     }
     
+    
     for (int i = 0; i < char_traits<char>::length(str); i++) {
-        cout << "TEST: " << toFind->front() << endl;
-        cout << "TEST: " << (*vect)[32]->front() << endl;
+        char find = toFind->front();
+        char v = (*vect)[32]->front();
+        cout << "TEST: " << (find == v) << endl;
         toFind->pop_front();
         (*vect)[32]->pop_front();
     }
