@@ -23,6 +23,8 @@ public:
     list<char>* createLinkedList(char* input);
     void insert(T input);
     bool find(T str);
+    int findIndex(T str);
+    void remove(T str);
 };
 
 template<class T>
@@ -52,7 +54,6 @@ void HashTable<T>::insert(T input) {
     int hashInt = HashTable::hashInt(input);
     list<char>* linkedList = HashTable::createLinkedList(input);
     
-    cout << "NEW HASH: " << hashInt <<endl;
     int i = hashInt;
     while (true) {
         // If hashInt is greater than the capacity of the vector, resize the vector to hashInt and insert the linkedlist at hashInt
@@ -65,7 +66,6 @@ void HashTable<T>::insert(T input) {
         // If the space at it is taken, increment it and go through loop again
         else if ((*vect)[i] != NULL) {
             i++;
-            cout << "inc i to " << i << endl;
             continue;
         }
         // If it is null, then insert at that position
@@ -82,33 +82,84 @@ template<class T>
 bool HashTable<T>::find(T str) {
     int hashInt = HashTable::hashInt(str);
     list<char>* toFind = HashTable::createLinkedList(str);
-    list<char>* tempList;
-    
-//    auto it = toFind->begin();
-//    for (auto it = toFind->begin(); it != toFind->end();) {
-//        cout << *it << " " << sizeof(it) << endl;
-//        advance(it, 1);
-//    }
-    
+    bool booly = false;
+  
+// I wrote this mess because the '==' operator for lists did not seem to be working with my lists.
+// I tested compared the size of each list in addition to corresponding elements in each list, all of which returned true
+// However the '==' operator always returned false, so I decided to just make it myself
     int i = hashInt;
-    while (i < vect->size()) {
-        cout << "Checking at " << i << endl;
-        if (toFind == (*vect)[i]) {
-            return true;
+    while (i < vect->size() && booly == false && (*vect)[i] != NULL) {
+        if (toFind->size() == (*vect)[i]->size()) {
+            list<char>* tempList = new list<char>(*(*vect)[i]);
+            for (int x = 0; x < char_traits<char>::length(str); x++) {
+                char find = toFind->front();
+                char v = tempList->front();
+                if (find == v) {
+                    booly = true;
+                    toFind->pop_front();
+                    tempList->pop_front();
+                    continue;
+                }
+                else {
+                    booly = false;
+                    i++;
+                    break;
+                }
+            }
         }
         else {
             i++;
             continue;
         }
     }
+    return booly;
+}
+ // this is the same as the find() method, but returns the index of the vect, for ease of removal
+template<class T>
+int HashTable<T>::findIndex(T str) {
+    int hashInt = HashTable::hashInt(str);
+    list<char>* toFind = HashTable::createLinkedList(str);
+    bool booly = false;
+    int retVal = -1;
     
-    
-    for (int i = 0; i < char_traits<char>::length(str); i++) {
-        char find = toFind->front();
-        char v = (*vect)[32]->front();
-        cout << "TEST: " << (find == v) << endl;
-        toFind->pop_front();
-        (*vect)[32]->pop_front();
+    int i = hashInt;
+    while (i < vect->size() && booly == false) {
+        if (toFind->size() == (*vect)[i]->size()) {
+            list<char>* tempList = new list<char>(*(*vect)[i]);
+            for (int x = 0; x < char_traits<char>::length(str); x++) {
+                char find = toFind->front();
+                char v = tempList->front();
+                if (find == v) {
+                    booly = true;
+                    retVal = i;
+                    toFind->pop_front();
+                    tempList->pop_front();
+                    continue;
+                }
+                else {
+                    retVal = -1;
+                    booly = false;
+                    i++;
+                    break;
+                }
+            }
+        }
+        else {
+            i++;
+            continue;
+        }
     }
-    return false;
+    return retVal;
+}
+
+template<class T>
+void HashTable<T>::remove(T str) {
+    bool isListed = HashTable::find(str);
+    int pos = HashTable::findIndex(str);
+    
+    if (isListed) {
+        cout << "removing " << str << " from position " << pos << endl;
+        delete ((*vect)[pos - 1]);
+        (*vect)[pos - 1] = NULL;
+    }
 }

@@ -29,5 +29,17 @@ int main() {
     else {
         cout << "Zanola Helen is not in the list" << endl;
     }
-    return 0;
+    if ((*myHashTable).find("Zanola Helen")) {
+        cout << "Zanola Helen is in the list" << endl;
+    }
+    else {
+        cout << "Zanola Helen is not in the list" << endl;
+    }
+    (*myHashTable).remove("Zea John");
+    if ((*myHashTable).find("Zea John")) {
+        cout << "Zea John is in the list" << endl;
+    }
+    else {
+        cout << "Zea John is not in the list" << endl;
+    }
 }
