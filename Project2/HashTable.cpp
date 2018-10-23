@@ -11,21 +11,27 @@
 #include <vector>
 #include <list>
 
-using namespace std;
 
 template<class T>
 class HashTable {
 protected:
-    vector<list<char>*>* vect = new vector<list<char>*>(0);
+    std::vector<std::list<char>*>* vect = new std::vector<std::list<char>*>(0);
 public:
+    HashTable();
     HashTable(int n);
     int hashInt(T input);
-    list<char>* createLinkedList(char* input);
+    std::list<char>* createLinkedList(char* input);
     void insert(T input);
     bool find(T str);
     int findIndex(T str);
     void remove(T str);
+    void split(int vInd, int lInd);
+    ~HashTable();
 };
+
+template<class T>
+HashTable<T>::HashTable() {
+}
 
 template<class T>
 HashTable<T>::HashTable(int n) {
@@ -38,11 +44,11 @@ int HashTable<T>::hashInt(T input) {
 }
 
 template<class T>
-list<char>* HashTable<T>::createLinkedList(char* name) {
-    list<char>* nameList = new list<char>();
+std::list<char>* HashTable<T>::createLinkedList(char* name) {
+    std::list<char>* nameList = new std::list<char>();
     
     // insert each element of the char array into the linked list
-    for (int i = 0; i < char_traits<char>::length(name); i++) {
+    for (int i = 0; i < std::char_traits<char>::length(name); i++) {
         nameList->push_back(name[i]);
     }
     
@@ -52,7 +58,7 @@ list<char>* HashTable<T>::createLinkedList(char* name) {
 template<class T>
 void HashTable<T>::insert(T input) {
     int hashInt = HashTable::hashInt(input);
-    list<char>* linkedList = HashTable::createLinkedList(input);
+    std::list<char>* linkedList = HashTable::createLinkedList(input);
     
     int i = hashInt;
     while (true) {
@@ -60,7 +66,7 @@ void HashTable<T>::insert(T input) {
         if (i >= vect->size()) {
             vect->resize(i, NULL);
             (*vect).push_back(linkedList);
-            cout << "Added " << input << " to vect from if at " << i << endl;
+            std::cout << "Added " << input << " to vect from if at " << i << std::endl;
             break;
         }
         // If the space at it is taken, increment it and go through loop again
@@ -71,7 +77,7 @@ void HashTable<T>::insert(T input) {
         // If it is null, then insert at that position
         if ((*vect)[i] == NULL) {
             (*vect)[i] = linkedList;
-            cout << "Added " << input << " list to vect from else at " << i << endl;
+            std::cout << "Added " << input << " list to vect from else at " << i << std::endl;
             i++;
             break;
         }
@@ -81,7 +87,7 @@ void HashTable<T>::insert(T input) {
 template<class T>
 bool HashTable<T>::find(T str) {
     int hashInt = HashTable::hashInt(str);
-    list<char>* toFind = HashTable::createLinkedList(str);
+    std::list<char>* toFind = HashTable::createLinkedList(str);
     bool booly = false;
   
 // I wrote this mess because the '==' operator for lists did not seem to be working with my lists.
@@ -90,8 +96,8 @@ bool HashTable<T>::find(T str) {
     int i = hashInt;
     while (i < vect->size() && booly == false && (*vect)[i] != NULL) {
         if (toFind->size() == (*vect)[i]->size()) {
-            list<char>* tempList = new list<char>(*(*vect)[i]);
-            for (int x = 0; x < char_traits<char>::length(str); x++) {
+            std::list<char>* tempList = new std::list<char>(*(*vect)[i]);
+            for (int x = 0; x < std::char_traits<char>::length(str); x++) {
                 char find = toFind->front();
                 char v = tempList->front();
                 if (find == v) {
@@ -118,15 +124,15 @@ bool HashTable<T>::find(T str) {
 template<class T>
 int HashTable<T>::findIndex(T str) {
     int hashInt = HashTable::hashInt(str);
-    list<char>* toFind = HashTable::createLinkedList(str);
+    std::list<char>* toFind = HashTable::createLinkedList(str);
     bool booly = false;
     int retVal = -1;
     
     int i = hashInt;
     while (i < vect->size() && booly == false) {
         if (toFind->size() == (*vect)[i]->size()) {
-            list<char>* tempList = new list<char>(*(*vect)[i]);
-            for (int x = 0; x < char_traits<char>::length(str); x++) {
+            std::list<char>* tempList = new std::list<char>(*(*vect)[i]);
+            for (int x = 0; x < std::char_traits<char>::length(str); x++) {
                 char find = toFind->front();
                 char v = tempList->front();
                 if (find == v) {
@@ -158,8 +164,58 @@ void HashTable<T>::remove(T str) {
     int pos = HashTable::findIndex(str);
     
     if (isListed) {
-        cout << "removing " << str << " from position " << pos << endl;
+        std::cout << "removing " << str << " from position " << pos << std::endl;
         delete ((*vect)[pos - 1]);
         (*vect)[pos - 1] = NULL;
     }
+}
+
+template<class T>
+void HashTable<T>::split(int vInd, int lInd) {
+    std::cout << "Splitting " << vInd << std::endl;
+    if ((*vect)[vInd] == NULL) {
+        return;
+    }
+    std::list<char>* toSplit = (*vect)[vInd];
+    std::list<char>* split = new std::list<char>();
+    auto it = toSplit->begin();
+    advance(it, lInd);
+    
+    (*split).splice((*split).begin(), (*toSplit), it, toSplit->end());
+    (*vect)[vInd]->resize(lInd);
+    
+    vInd++;
+    while ((*split).size() > 0) {
+        // If vInd is greater than the capacity of the vector, resize the vector to vInd
+        if (vInd > vect->size()) {
+            std::cout << vInd << " >= " << vect->size() << std::endl;
+            vect->resize(vInd, NULL);
+            continue;
+        }
+        if ((*vect)[vInd] == NULL) {
+            (*vect)[vInd] = new std::list<char>();
+            (*vect)[vInd]->push_front((*split).front());
+            std::cout << "1:Just added " << (*split).front() << " at " << vInd << std::endl;
+            (*split).pop_front();
+            continue;
+        }
+        // If this space contains less than lInd elements, add a char
+        else if ((*vect)[vInd]->size() < lInd) {
+            (*vect)[vInd]->push_front((*split).front());
+            std::cout << "2:Just added " << (*split).front() << " at " << vInd << std::endl;
+            (*split).pop_front();
+            continue;
+        }
+        else {
+            vInd++;
+        }
+    }
+}
+
+template<class T>
+HashTable<T>::~HashTable<T>() {
+    for (int i = 0; i < vect->capacity(); i++) {
+        delete (*vect)[i];
+    }
+    delete vect;
 }
