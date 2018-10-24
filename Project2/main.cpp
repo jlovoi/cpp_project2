@@ -22,18 +22,18 @@ int main() {
         (*myHashTable).insert(Names[i]);
     }
     std::cout << "Printing the hash table after inserting...." << std::endl;
-    std::cout << myHashTable << std::endl;
+    std::cout << *myHashTable << std::endl;
     if ((*myHashTable).find("Zanola Helen")) {
         std::cout << "Zanola Helen is in the list" << std::endl;
     }
     else {
         std::cout << "Zanola Helen is not in the list" << std::endl;
     }
-    if ((*myHashTable).find("Zanola Helen")) {
-        std::cout << "Zanola Helen is in the list" << std::endl;
+    if ((*myHashTable).find("Zea John")) {
+        std::cout << "Zea John is in the list" << std::endl;
     }
     else {
-        std::cout << "Zanola Helen is not in the list" << std::endl;
+        std::cout << "Zea John is not in the list" << std::endl;
     }
     (*myHashTable).remove("Zea John");
     if ((*myHashTable).find("Zea John")) {
@@ -43,11 +43,9 @@ int main() {
         std::cout << "Zea John is not in the list" << std::endl;
     }
     
-    for (i=0; i < 33; i++) {
-        (*myHashTable).split(i, 2);
-    }
+    (*myHashTable).split(0, 2);
     std::cout << "Printing the hash table after splitting...." << std::endl;
-    std::cout << myHashTable << std::endl;
+    std::cout << *myHashTable << std::endl;
    
     
 }

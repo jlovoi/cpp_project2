@@ -26,6 +26,8 @@ public:
     int findIndex(T str);
     void remove(T str);
     void split(int vInd, int lInd);
+    std::vector<std::list<char>*> getVect();
+//    friend std::ostream& operator<< (std::ostream& out, HashTable<T>& ht);
     ~HashTable();
 };
 
@@ -165,8 +167,8 @@ void HashTable<T>::remove(T str) {
     
     if (isListed) {
         std::cout << "removing " << str << " from position " << pos << std::endl;
-        delete ((*vect)[pos - 1]);
-        (*vect)[pos - 1] = NULL;
+        delete ((*vect)[pos]);
+        (*vect)[pos] = NULL;
     }
 }
 
@@ -188,21 +190,21 @@ void HashTable<T>::split(int vInd, int lInd) {
     while ((*split).size() > 0) {
         // If vInd is greater than the capacity of the vector, resize the vector to vInd
         if (vInd > vect->size()) {
-            std::cout << vInd << " >= " << vect->size() << std::endl;
+//            std::cout << vInd << " >= " << vect->size() << std::endl;
             vect->resize(vInd, NULL);
             continue;
         }
         if ((*vect)[vInd] == NULL) {
             (*vect)[vInd] = new std::list<char>();
-            (*vect)[vInd]->push_front((*split).front());
-            std::cout << "1:Just added " << (*split).front() << " at " << vInd << std::endl;
+            (*vect)[vInd]->push_back((*split).front());
+//            std::cout << "1:Just added " << (*split).front() << " at " << vInd << std::endl;
             (*split).pop_front();
             continue;
         }
         // If this space contains less than lInd elements, add a char
         else if ((*vect)[vInd]->size() < lInd) {
-            (*vect)[vInd]->push_front((*split).front());
-            std::cout << "2:Just added " << (*split).front() << " at " << vInd << std::endl;
+            (*vect)[vInd]->push_back((*split).front());
+//            std::cout << "2:Just added " << (*split).front() << " at " << vInd << std::endl;
             (*split).pop_front();
             continue;
         }
@@ -210,6 +212,28 @@ void HashTable<T>::split(int vInd, int lInd) {
             vInd++;
         }
     }
+}
+
+template<class T>
+std::vector<std::list<char>*> HashTable<T>::getVect() {
+    return *vect;
+}
+
+template<class T>
+std::ostream& operator<<(std::ostream& out, HashTable<T>& ht) {
+    for (int i = 0; i < ht.getVect().size(); i++) {
+        out << "HashTable index: " << i << ", Contents: ";
+        if (ht.getVect()[i] == NULL) {
+            out << std::endl;
+            continue;
+        }
+        std::list<char>* name = ht.getVect()[i];
+        for (auto it = name->begin(); it != name->end(); it++) {
+            out << (*it);
+        }
+        out << std::endl;
+    }
+    return out;
 }
 
 template<class T>
